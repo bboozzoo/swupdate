@@ -14,7 +14,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc. 
+ * Foundation, Inc.
  */
 
 #include <stdio.h>
@@ -65,7 +65,9 @@ struct flash_description *get_flash_info(void) {
 static struct option long_options[] = {
 	{"verbose", no_argument, NULL, 'v'},
 	{"image", required_argument, NULL, 'i'},
+#ifdef CONFIG_MTD
 	{"blacklist", required_argument, NULL, 'b'},
+#endif
 	{"help", no_argument, NULL, 'h'},
 	{"server", no_argument, NULL, 's'},
 #ifdef CONFIG_DOWNLOAD
@@ -87,7 +89,9 @@ static void usage(char *programname)
 	printf(("Usage %s [OPTION]\n"
 		" -v, --verbose         : be verbose\n"
 		" -i, --image <filename> : Software to be installed\n"
+#ifdef CONFIG_MTD
 		" -b, --blacklist <list of mtd> : MTDs that must not be scanned for UBI\n"
+#endif
 #ifdef CONFIG_DOWNLOAD
 		" -d, --download <url> : URL of image to be downloaded. Image will be\n"
 		"                        downloaded completely to --image filename, then\n"
@@ -321,8 +325,10 @@ static void swupdate_init(struct swupdate_cfg *sw)
 	mkdir(DATASRC_DIR, 0777);
 	mkdir(DATADST_DIR, 0777);
 
+#ifdef CONFIG_MTD
 	mtd_init();
 	ubi_init();
+#endif
 }
 
 int main(int argc, char **argv)
@@ -345,7 +351,10 @@ int main(int argc, char **argv)
 
 	memset(&flashdesc, 0, sizeof(flashdesc));
 	memset(main_options, 0, sizeof(main_options));
-	strcpy(main_options, "vhi:b:s");
+	strcpy(main_options, "vhi:s");
+#ifdef CONFIG_MTD
+	strcat(main_options, "b:");
+#endif
 #ifdef CONFIG_DOWNLOAD
 	strcat(main_options, "d:");
 #endif
@@ -365,8 +374,10 @@ int main(int argc, char **argv)
 		case 'v':
 			verbose++;
 			break;
+#ifdef CONFIG_MTD
 		case 'b':
 			mtd_set_ubiblacklist(optarg);
+#endif
 		case 'i':
 			strncpy(fname, optarg, sizeof(fname));
 			opt_i = 1;
@@ -427,4 +438,4 @@ int main(int argc, char **argv)
 	if (opt_w || opt_s)
 		network_initializer(&swcfg);
 
-}	
+}
