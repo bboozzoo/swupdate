@@ -1,0 +1,52 @@
+software =
+{
+        version = "0.1";
+
+        hardware-compatibility = [ "revA" ];
+
+        images: (
+        /* single copy mode */
+        {
+                filename = "uImage";
+                volume = "kernel";
+        },
+        {
+                filename = "rootfs.ubifs";
+                volume = "rootfs";
+        }
+        );
+
+        /* differentiate running image modes/sets */
+        running:
+        {
+                main:
+                {
+                        images: (
+                        /* single copy mode */
+                        {
+                                filename = "uImage";
+                                volume = "kernel";
+                        },
+                        {
+                                filename = "rootfs.ubifs";
+                                volume = "rootfs";
+                        }
+                        )
+                };
+                alt:
+                {
+                        images: (
+                        /* single copy mode */
+                        {
+                                filename = "uImage";
+                                volume = "kernel";
+                        },
+                        {
+                                filename = "rootfs.ubifs";
+                                volume = "rootfs";
+                        }
+                        )
+                };
+                
+        };
+}
