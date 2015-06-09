@@ -148,7 +148,7 @@ static int extract_files(int fd, struct swupdate_cfg *software)
 			}
 			close(fdout);
 
-			if (parse(software, output_file)) {
+			if (parse(software, output_file, NULL)) {
 				TRACE("Compatible SW not found");
 				return -1;
 			}

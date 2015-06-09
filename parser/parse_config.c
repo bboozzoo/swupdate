@@ -34,6 +34,7 @@
 	get_field(e, name, d, sizeof(d))
 
 static struct hw_type hardware;
+static char *mode = NULL;
 
 static const config_setting_t *get_setting(config_t *cfg,
 	const char *field)
@@ -41,7 +42,33 @@ static const config_setting_t *get_setting(config_t *cfg,
 	const config_setting_t *setting;
 
 	char node[1024];
-	if (field && strlen(hardware.boardname)) {
+
+	if (!field)
+		return NULL;
+
+	if (mode && strlen(mode)) {
+		/* Try with both running mode and board name */
+		if (strlen(hardware.boardname)) {
+			snprintf(node, sizeof(node), "software.%s.running.%s.%s",
+				hardware.boardname,
+				mode,
+				field);
+			setting = config_lookup(cfg, node);
+			if (setting)
+				return setting;
+		}
+		/* still here, try with  */
+		snprintf(node, sizeof(node), "software.running.%s.%s",
+			mode,
+			field);
+		setting = config_lookup(cfg, node);
+		if (setting)
+			return setting;
+
+	}
+
+	/* Try with board name */
+	if (strlen(hardware.boardname)) {
 		snprintf(node, sizeof(node), "software.%s.%s",
 			hardware.boardname,
 			field);
@@ -265,10 +292,11 @@ static void parse_images(config_t *cfg, struct swupdate_cfg *swcfg)
 		if (!elem)
 			continue;
 
+		TRACE("name: %s\n", config_setting_name(elem));
 		if(!(config_setting_lookup_string(elem, "filename", &str)))
 			continue;
 
-		image = (struct img_type *)calloc(1, sizeof(struct img_type));	
+		image = (struct img_type *)calloc(1, sizeof(struct img_type));
 		if (!image) {
 			ERROR( "No memory: malloc failed\n");
 			return;
@@ -343,16 +371,17 @@ static void parse_files(config_t *cfg, struct swupdate_cfg *swcfg)
 			file->fname,
 			file->path,
 			strlen(file->device) ? file->device : "ROOTFS");
- 
+
 		LIST_INSERT_HEAD(&swcfg->images, file, next);
 	}
 }
 
-int parse_cfg (struct swupdate_cfg *swcfg, const char *filename)
+int parse_cfg (struct swupdate_cfg *swcfg, const char *filename, const char *running_mode)
 {
 	config_t cfg;
 	const char *str;
 
+	mode = running_mode;
 	memset(&cfg, 0, sizeof(cfg));
 	config_init(&cfg);
 
@@ -393,6 +422,7 @@ int parse_cfg (struct swupdate_cfg *swcfg, const char *filename)
 	parse_partitions(&cfg, swcfg);
 
 	config_destroy(&cfg);
+	mode = 0;
 
 	return 0;
 }

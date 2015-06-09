@@ -23,20 +23,20 @@
 #include "swupdate.h"
 #include "parsers.h"
 
-int parse(struct swupdate_cfg *sw, const char *descfile)
+int parse(struct swupdate_cfg *sw, const char *descfile, const char *running_mode)
 {
 	int ret = -1;
 
 #ifdef CONFIG_LIBCONFIG
-	ret = parse_cfg(sw, descfile);
+	ret = parse_cfg(sw, descfile, running_mode);
 	if (ret == 0) return 0;
 #endif
 #ifdef CONFIG_JSON
-	ret = parse_json(sw, descfile);
+	ret = parse_json(sw, descfile, running_mode);
 	if (ret == 0) return 0;
 #endif
 #ifdef CONFIG_LUAEXTERNAL
-	ret = parse_external(sw, descfile);
+	ret = parse_external(sw, descfile, running_mode);
 	if (ret == 0) return 0;
 #endif
 	return ret;
