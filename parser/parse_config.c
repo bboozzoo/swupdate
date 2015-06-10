@@ -42,6 +42,7 @@ static const config_setting_t *get_setting(config_t *cfg,
 
 	char node[1024];
 
+	TRACE("field: %s\n", field);
 	if (!field)
 		return NULL;
 
@@ -53,6 +54,7 @@ static const config_setting_t *get_setting(config_t *cfg,
 				swcfg->software_set,
 				swcfg->running_mode,
 				field);
+			TRACE("try: %s\n", node);
 			setting = config_lookup(cfg, node);
 			if (setting)
 				return setting;
@@ -62,6 +64,7 @@ static const config_setting_t *get_setting(config_t *cfg,
 			swcfg->software_set,
 			swcfg->running_mode,
 			field);
+		TRACE("try: %s\n", node);
 		setting = config_lookup(cfg, node);
 		if (setting)
 			return setting;
@@ -73,6 +76,7 @@ static const config_setting_t *get_setting(config_t *cfg,
 		snprintf(node, sizeof(node), "software.%s.%s",
 			hardware.boardname,
 			field);
+		TRACE("try: %s\n", node);
 		setting = config_lookup(cfg, node);
 		if (setting)
 			return setting;
@@ -80,6 +84,7 @@ static const config_setting_t *get_setting(config_t *cfg,
 	/* Fall back without board entry */
 	snprintf(node, sizeof(node), "software.%s",
 		field);
+	TRACE("try: %s\n", node);
 	return config_lookup(cfg, node);
 }
 
@@ -280,6 +285,7 @@ static void parse_images(config_t *cfg, struct swupdate_cfg *swcfg)
 	struct img_type *image;
 	const char *str;
 
+	TRACE("images\n");
 	setting = get_setting(cfg, "images", swcfg);
 
 	if (setting == NULL)
@@ -293,6 +299,7 @@ static void parse_images(config_t *cfg, struct swupdate_cfg *swcfg)
 		if (!elem)
 			continue;
 
+		TRACE("name: %s\n", config_setting_name(elem));
 		if(!(config_setting_lookup_string(elem, "filename", &str)))
 			continue;
 
