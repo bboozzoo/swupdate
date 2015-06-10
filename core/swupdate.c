@@ -216,7 +216,7 @@ static int install_from_file(char *fname)
 	}
 
 	pos = extract_sw_description(fdsw);
-	ret = parse(&swcfg, TMPDIR SW_DESCRIPTION_FILENAME, NULL);
+	ret = parse(&swcfg, TMPDIR SW_DESCRIPTION_FILENAME);
 	if (ret) {
 		exit(1);
 	}

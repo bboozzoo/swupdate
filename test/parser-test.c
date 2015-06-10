@@ -16,6 +16,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc.
  */
+#include <stdio.h>
 #include <string.h>
 #include <assert.h>
 #include "swupdate.h"
@@ -37,14 +38,31 @@ int get_hw_revision(struct hw_type *hw)
 
 void notify(RECOVERY_STATUS status, int error, const char *msg)
 {
+	fprintf(stderr, msg);
 }
 
 int main(int argc, char *argv[])
 {
 	struct swupdate_cfg swup;
-	bzero(&swup, sizeof(swup));
+	const char *test_file = TEST_LIBCONFIG_FILE;
+	const char *software_set = "stable";
+	const char *running_mode = "main";
 
-	parse_cfg(&swup, TEST_LIBCONFIG_FILE, NULL);
+	memset(&swup, 0, sizeof(swup));
+
+	if (argc >= 2)
+		test_file = argv[1];
+
+	if (argc >= 3)
+		software_set = argv[2];
+
+	if (argc >= 4)
+		running_mode = argv[3];
+
+	strncpy(swup.software_set, software_set, sizeof(swup.software_set));
+	strncpy(swup.running_mode, running_mode, sizeof(swup.running_mode));
+
+	parse_cfg(&swup, test_file);
 
 	return 0;
 }

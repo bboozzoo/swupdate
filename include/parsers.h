@@ -29,13 +29,9 @@
 #define SW_DESCRIPTION_FILENAME	CONFIG_SWDESCRIPTION
 #endif
 
-int parse(struct swupdate_cfg *swcfg, const char *filename,
-	const char *running_mode);
-int parse_cfg (struct swupdate_cfg *swcfg, const char *filename,
-	const char *running_mode);
-int parse_json(struct swupdate_cfg *swcfg, const char *filename,
-	const char *running_mode);
-int parse_external(struct swupdate_cfg *swcfg, const char *filename,
-	const char *running_mode);
+int parse(struct swupdate_cfg *swcfg, const char *filename);
+int parse_cfg (struct swupdate_cfg *swcfg, const char *filename);
+int parse_json(struct swupdate_cfg *swcfg, const char *filename);
+int parse_external(struct swupdate_cfg *swcfg, const char *filename);
 #endif
 
