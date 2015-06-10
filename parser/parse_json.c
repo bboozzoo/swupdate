@@ -50,6 +50,8 @@ static json_object *find_recursive_node(json_object *root, const char **names)
 		const char *n = *names;
 		json_object *cnode = NULL;
 
+		TRACE("try: %s", n);
+
 		if (json_object_object_get_ex(node, n, &cnode))
 			node = cnode;
 		else
@@ -66,6 +68,7 @@ static json_object *find_node(json_object *root, const char *node,
 	json_object *jnode = NULL;
 	const char *simple_nodes[] = {node, NULL};
 
+	TRACE("find node: %s\n", node);
 	if (strlen(swcfg->running_mode) && strlen(swcfg->software_set)) {
 		if (strlen(hardware.boardname)) {
 			const char *nodes[] = {hardware.boardname, swcfg->software_set,
