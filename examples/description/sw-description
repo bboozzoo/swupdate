@@ -22,30 +22,34 @@ software =
                 main:
                 {
                         images: (
-                        /* single copy mode */
                         {
-                                filename = "uImage";
-                                volume = "kernel";
-                        },
-                        {
-                                filename = "rootfs.ubifs";
-                                volume = "rootfs";
+                                filename = "rootfs.ext3";
+                                device = "/dev/mmcblk0p2";
                         }
-                        )
+                        );
+
+                        uboot: (
+                        {
+                                name = "bootpart";
+                                value = "0:2";
+                        }
+                        );
                 };
                 alt:
                 {
                         images: (
-                        /* single copy mode */
                         {
-                                filename = "uImage";
-                                volume = "kernel";
-                        },
-                        {
-                                filename = "rootfs.ubifs";
-                                volume = "rootfs";
+                                filename = "rootfs.ext3";
+                                device = "/dev/mmcbkl0p1";
                         }
-                        )
+                        );
+
+                        uboot: (
+                        {
+                                name = "bootpart";
+                                value = "0:1";
+                        }
+                        );
                 };
                 
         };
